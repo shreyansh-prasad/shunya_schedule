@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SHUNYA — Autonomous AI & Innovation Battles</title>
+  <meta name="description" content="Shunya — six AI and innovation challenges in one continuous night. Prompts, agents, design, strategy. Pick your battle.">
+
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+
+  <!-- GSAP & ScrollTrigger CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+</head>
+<body>
+  <canvas id="starfield"></canvas>
+
+  <header class="header">
+    <div class="header__brand">
+      <span class="header__logo">SHUNYA</span>
+      <span class="header__badge">EXPEDITION // 2026</span>
+    </div>
+
+    <div class="header__tracker" id="header-tracker">
+      <span class="header__tracker-dot"></span>
+      <span class="header__tracker-label" id="header-tracker-label">01 // 06 — ZERO DAY APOCALYPSE</span>
+    </div>
+
+    <nav class="header__nav" aria-label="Main navigation">
+      <a href="#events" class="header__nav-link is-active">Challenges</a>
+      <a href="#register" class="header__nav-link header__nav-link--accent">Register Interest &rarr;</a>
+    </nav>
+  </header>
+
+  <main id="scroll-container"></main>
+
+  <div id="dynamic-island-root"></div>
+
+  <div id="details-root"></div>
+
+  <footer class="footer">
+    <div class="footer__item footer__item--left">
+      <span class="footer__metric">SYS: 2026.08.04 // VOID SECTOR</span>
+    </div>
+    <div class="footer__item footer__item--center">
+      <span class="footer__wordmark">EXPEDITION</span>
+    </div>
+    <div class="footer__item footer__item--right">
+      <span class="footer__metric">DEEP SPACE TELEMETRY</span>
+    </div>
+  </footer>
+
+  <script type="module" src="js/main.js?v=2"></script>
+</body>
+</html>
