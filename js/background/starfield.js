@@ -119,17 +119,16 @@ function draw(time) {
     const twk = Math.sin(sec * s.tw + s.ph) * 0.25 + 0.75;
     ctx.globalAlpha = s.a * twk;
 
-    // Glow for big near stars
+    // Glow for big near stars (Optimized: Removed expensive radial gradients)
     if (s.li === 2 && s.r > 2.0) {
-      const g = ctx.createRadialGradient(px, py, 0, px, py, s.r * 3.5);
-      g.addColorStop(0, 'rgba(200,220,255,0.6)');
-      g.addColorStop(1, 'rgba(200,220,255,0)');
-      ctx.fillStyle = g;
+      ctx.globalAlpha = s.a * twk * 0.15;
+      ctx.fillStyle = '#ffffff';
       ctx.beginPath();
-      ctx.arc(px, py, s.r * 3.5, 0, Math.PI * 2);
+      ctx.arc(px, py, s.r * 4.0, 0, Math.PI * 2);
       ctx.fill();
     }
 
+    ctx.globalAlpha = s.a * twk;
     ctx.fillStyle = '#ffffff';
     ctx.beginPath();
     ctx.arc(px, py, s.r, 0, Math.PI * 2);
