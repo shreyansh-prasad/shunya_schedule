@@ -1,65 +1,74 @@
+
+@font-face {
+  font-family: 'Corpta';
+  src: url('../fonts/corpta/Corpta.ttf.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* ── Typography Tokens ───────────────────────────────────────────────────── */
-  --font-display: 'Chakra Petch', 'Space Grotesk', sans-serif;   /* CORPTA-style: condensed geometric sci-fi */
-  --font-ui: 'Chakra Petch', 'Space Mono', monospace;            /* UI labels, nav, tags */
-  --font-body: 'Inter', system-ui, sans-serif;                   /* Body copy only */
+  --font-display: 'Corpta', 'Helvetica Neue', 'Inter', 'Arial Black', sans-serif;
+  --font-ui: 'Corpta', 'Helvetica Neue', 'Inter', system-ui, sans-serif;
+  --font-body: 'Corpta', 'Helvetica Neue', 'Inter', system-ui, sans-serif;
 
-  /* ── Deep Void & Ambient Space Foundations ─────────────────────────────── */
-  --void-black: #030407;
-  --void-navy: #060813;
-  --void-obsidian: #010204;
-  --star-white: #F5F7FF;
-  --star-dim: #8E95B8;
-  --star-muted: rgba(142, 149, 184, 0.45);
+  /* ── Deep Forest & Organic Foundations ─────────────────────────────── */
+  --void-black: #050807; /* Deep organic darkness instead of space black */
+  --void-navy: #07110E;  /* Deep moss underlayer instead of space navy */
+  --void-obsidian: #030403;
+  --star-white: #E8F5E9; /* Pale organic white */
+  --star-dim: #A5D6A7;
+  --star-muted: rgba(165, 214, 167, 0.45);
 
   /* ── Curated Luxury High-Contrast Headline Colors ──────────────────────── */
-  --headline-zero-day: #A8C2FF;       /* Luminous Platinum Periwinkle */
-  --headline-autopilot: #FFAE9F;      /* Radiant Sunset Coral */
-  --headline-devlympics: #14FFD8;     /* Hyper-Luminous Electric Mint */
-  --headline-flow-flux: #FFF6DF;      /* Luxury Warm Champagne Pearl */
-  --headline-hallucination: #FFEB88;  /* Electrum / Pure Canary Gold */
-  --headline-caseathon: #EBBFFF;      /* Ethereal Neon Lilac Ice */
+  --headline-zero-day: #FF0055;       /* Cyberpunk Red */
+  --headline-autopilot: #FFB800;      /* Solar Gold */
+  --headline-devlympics: #00FF9D;     /* Neon Emerald */
+  --headline-flow-flux: #FF00FF;      /* Plasma Pink */
+  --headline-hallucination: #D4FF00;  /* Toxic Lime */
+  --headline-caseathon: #FFFFFF;      /* Pure White */
 
   /* ── Dual-Hemisphere Chromatic Pairings (Left Celestial vs Right HUD) ───── */
-  /* 01. Zero Day: Velvet Crimson Rose vs Laser Ice Cyan */
-  --accent-zero-day-left: #FF1E4B;
-  --accent-zero-day-right: #00F0FF;
+  /* 01. Zero Day */
+  --accent-zero-day-left: #FF0055;
+  --accent-zero-day-right: #9D00FF;
 
-  /* 02. Autopilot: Bioluminescent Azure vs Solar Amber Gold */
-  --accent-autopilot-left: #00E5FF;
-  --accent-autopilot-right: #FFA502;
+  /* 02. Autopilot */
+  --accent-autopilot-left: #FFB800;
+  --accent-autopilot-right: #FFFFFF;
 
-  /* 03. Devlympics: Blazing Supernova Orange vs Electric Ultraviolet */
-  --accent-devlympics-left: #FF6600;
-  --accent-devlympics-right: #BD00FF;
+  /* 03. Devlympics */
+  --accent-devlympics-left: #00FF9D;
+  --accent-devlympics-right: #0033FF;
 
-  /* 04. Flow in Flux: Cosmic Orchid Magenta vs Acid Lime / Chartreuse */
-  --accent-flow-flux-left: #E040FB;
-  --accent-flow-flux-right: #C6FF00;
+  /* 04. Flow in Flux */
+  --accent-flow-flux-left: #FF00FF;
+  --accent-flow-flux-right: #00F0FF;
 
-  /* 05. Hallucination Hunt: Aurora Borealis Emerald vs Cyber Rose Neon */
-  --accent-hallucination-left: #00E676;
-  --accent-hallucination-right: #FF1373;
+  /* 05. Hallucination Hunt */
+  --accent-hallucination-left: #D4FF00;
+  --accent-hallucination-right: #FF5500;
 
-  /* 06. Case-a-thon: Deep Royal Sapphire vs Molten Topaz Gold */
-  --accent-caseathon-left: #2979FF;
-  --accent-caseathon-right: #FFB300;
+  /* 06. Case-a-thon */
+  --accent-caseathon-left: #FFFFFF;
+  --accent-caseathon-right: #0066FF;
 
   /* Legacy Fallback Accents */
-  --accent-zero-day: #FF1E4B;
-  --accent-autopilot: #00E5FF;
-  --accent-devlympics: #FF6600;
-  --accent-flow-flux: #E040FB;
-  --accent-hallucination: #00E676;
-  --accent-caseathon: #2979FF;
+  --accent-zero-day: #FF0055;
+  --accent-autopilot: #FFB800;
+  --accent-devlympics: #00FF9D;
+  --accent-flow-flux: #FF00FF;
+  --accent-hallucination: #D4FF00;
+  --accent-caseathon: #FFFFFF;
 
-  /* ── Glassmorphism & Specular Border Tokens ─────────────────────────────── */
-  --glass-surface: rgba(6, 8, 18, 0.68);
-  --glass-surface-hover: rgba(12, 16, 36, 0.88);
-  --glass-border: rgba(245, 247, 255, 0.14);
-  --glass-border-hover: rgba(245, 247, 255, 0.35);
-  --glass-highlight: rgba(255, 255, 255, 0.22);
-  --glass-blur: 24px;
+  /* ── Cellular Membrane & Glass Tokens ─────────────────────────────── */
+  --glass-surface: rgba(7, 17, 14, 0.65); /* Organic tint */
+  --glass-surface-hover: rgba(12, 28, 23, 0.85);
+  --glass-border: rgba(232, 245, 233, 0.08); /* Extremely delicate membrane border */
+  --glass-border-hover: rgba(232, 245, 233, 0.25);
+  --glass-highlight: rgba(255, 255, 255, 0.15);
+  --glass-blur: 32px; /* Increased blur for fluid feel */
 
   /* ── Holographic VFX Tokens ─────────────────────────────────────────────── */
   --holo-scanline: rgba(255, 255, 255, 0.04);

@@ -15,26 +15,23 @@ function bootstrap() {
   initTransition();
   initDynamicIsland();
 
-  // Header active tracker orchestration
-  const trackerLabel = document.getElementById('header-tracker-label');
-  const trackerDot = document.querySelector('.header__tracker-dot');
+  // Initialize Lenis Smooth Scrolling
+  if (typeof Lenis !== 'undefined') {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
+    });
+    
+    window.lenis = lenis;
 
-  window.addEventListener('shunya:event-change', (e) => {
-    if (!e.detail || !e.detail.event) return;
-    const { index, event } = e.detail;
-    const paddedIndex = String(index + 1).padStart(2, '0');
-    const color = event.headlineColor || event.accent || 'var(--star-white)';
+    lenis.on('scroll', ScrollTrigger.update);
 
-    if (trackerLabel) {
-      trackerLabel.textContent = `${paddedIndex} // 06 — ${event.name}`;
-      trackerLabel.style.color = color;
-    }
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000);
+    });
 
-    if (trackerDot) {
-      trackerDot.style.backgroundColor = color;
-      trackerDot.style.boxShadow = `0 0 12px ${color}`;
-    }
-  });
+    gsap.ticker.lagSmoothing(0);
+  }
 }
 
 if (document.readyState === 'loading') {

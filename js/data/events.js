@@ -1,11 +1,10 @@
 /**
- * Events Data Store — 6 Curated AI & Innovation Challenges
+ * Events Data Store — Symbiosis: Living System Interface
  * 
  * Each event defines:
- * - headlineColor: High-contrast luxury display color for giant center typography
- * - leftAccent: Atmospheric celestial color (Left Hemisphere)
- * - rightAccent: Technical HUD / CAD blueprint color (Right Hemisphere)
- * - accent: Primary theme identifier
+ * - headlineColor: Editorial display color for main typography
+ * - biomeColor: Natural system color (Left Hemisphere)
+ * - techColor: Engineered system color (Right Hemisphere)
  */
 
 export const events = [
@@ -13,11 +12,21 @@ export const events = [
     id: 'zero-day',
     name: 'Zero Day Apocalypse',
     tagline: 'Crack hidden passwords, prove human ingenuity beats the AI.',
-    tags: ['Prompt Engineering', 'Logic Battle', 'AI Defense'],
-    headlineColor: '#9EB6FF',  // Luminous Platinum Periwinkle
-    leftAccent: '#FF1E4B',     // Velvet Crimson Rose Eclipse
-    rightAccent: '#00F0FF',    // Laser Ice Cyan Cyber Vault Terminal
-    accent: '#FF1E4B',
+    tags: ['ECOLOGICAL DISTURBANCE', 'RESILIENCE INDEX'],
+    headlineColor: 'var(--headline-zero-day)',
+    biomeColor: 'var(--accent-zero-day-left)',
+    techColor: 'var(--accent-zero-day-right)',
+    leftAccent: 'var(--accent-zero-day-left)',
+    rightAccent: 'var(--accent-zero-day-right)',
+    accent: 'var(--accent-zero-day-left)',
+    biologicalModel: 'FOREST REGENERATION',
+    technologicalAnalog: 'CLIMATE RESILIENCE',
+    sharedPrinciple: 'ADAPTATION',
+    telemetry: {
+      observed: 'WILDFIRE DISTURBANCE',
+      analog: 'CLIMATE PREDICTION MODEL',
+      coexistence: 'ECOLOGICAL REGENERATION'
+    },
     format: 'Live Elimination &bull; Multi-Round',
     teamSize: '1 &ndash; 2 Operatives',
     duration: '3 Hours High-Stakes',
@@ -28,11 +37,21 @@ export const events = [
     id: 'autopilot',
     name: 'Autopilot',
     tagline: 'Build autonomous AI agents that reason and act on real-world challenges.',
-    tags: ['Autonomous Agents', 'Neural Reasoning', 'Tool Use'],
-    headlineColor: '#FFA092',  // Radiant Sunset Coral
-    leftAccent: '#00E5FF',     // Bioluminescent Azure Ice Giant
-    rightAccent: '#FF9F43',    // Solar Amber Gold 3D Flight Trajectory HUD
-    accent: '#00E5FF',
+    tags: ['SWARM INTELLIGENCE', 'COLLECTIVE NAVIGATION'],
+    headlineColor: 'var(--headline-autopilot)',
+    biomeColor: 'var(--accent-autopilot-left)',
+    techColor: 'var(--accent-autopilot-right)',
+    leftAccent: 'var(--accent-autopilot-left)',
+    rightAccent: 'var(--accent-autopilot-right)',
+    accent: 'var(--accent-autopilot-left)',
+    biologicalModel: 'MURMURATION',
+    technologicalAnalog: 'AUTONOMOUS ROBOTICS',
+    sharedPrinciple: 'COLLECTIVE INTELLIGENCE',
+    telemetry: {
+      observed: 'FLOCK COORDINATION',
+      analog: 'MULTI-AGENT DRONE SWARM',
+      coexistence: 'DECENTRALIZED LOGIC'
+    },
     format: 'Autonomous Benchmark &bull; Agent Arena',
     teamSize: '1 &ndash; 4 Builders',
     duration: '6 Hours Sprint',
@@ -43,11 +62,21 @@ export const events = [
     id: 'devlympics',
     name: '24-Hour Devlympics',
     tagline: 'A 24-hour build-and-pitch innovation sprint with mentors.',
-    tags: ['Hackathon', 'Innovation Sprint', 'Live Pitch'],
-    headlineColor: '#00FFD1',  // Hyper-Luminous Electric Mint
-    leftAccent: '#FF6B00',     // Blazing Supernova Core & Coronal Flare
-    rightAccent: '#B388FF',    // Electric Ultraviolet 24H Launch Dial HUD
-    accent: '#FF6B00',
+    tags: ['DISTRIBUTED COMPUTING', 'MYCELIUM NODE'],
+    headlineColor: 'var(--headline-devlympics)',
+    biomeColor: 'var(--accent-devlympics-left)',
+    techColor: 'var(--accent-devlympics-right)',
+    leftAccent: 'var(--accent-devlympics-left)',
+    rightAccent: 'var(--accent-devlympics-right)',
+    accent: 'var(--accent-devlympics-left)',
+    biologicalModel: 'MYCELIAL NETWORK',
+    technologicalAnalog: 'DISTRIBUTED SYSTEMS',
+    sharedPrinciple: 'DECENTRALIZED INFRASTRUCTURE',
+    telemetry: {
+      observed: 'NUTRIENT EXCHANGE',
+      analog: 'DATA PACKET ROUTING',
+      coexistence: 'NODE DEPENDENCY'
+    },
     format: '24-Hour Nonstop &bull; Build & Pitch',
     teamSize: '2 &ndash; 4 Founders',
     duration: '24 Hours Endurance',
@@ -56,13 +85,23 @@ export const events = [
   },
   {
     id: 'flow-in-flux',
-    name: 'Flow in Flux 2026',
+    name: 'Flow in Flux',
     tagline: 'Branding, UI/UX, product design, game design, AI-assisted design.',
-    tags: ['UI/UX Mastery', 'Product Design', 'Generative Media'],
-    headlineColor: '#FFF3D6',  // Luxury Warm Champagne Pearl
-    leftAccent: '#E040FB',     // Cosmic Orchid Gravitational Singularity
-    rightAccent: '#CCFF00',    // Acid Lime Golden Ratio UI Blueprint
-    accent: '#E040FB',
+    tags: ['FLUID SIMULATION', 'ENERGY MOVEMENT'],
+    headlineColor: 'var(--headline-flow-flux)',
+    biomeColor: 'var(--accent-flow-flux-left)',
+    techColor: 'var(--accent-flow-flux-right)',
+    leftAccent: 'var(--accent-flow-flux-left)',
+    rightAccent: 'var(--accent-flow-flux-right)',
+    accent: 'var(--accent-flow-flux-left)',
+    biologicalModel: 'FLUID ECOSYSTEM',
+    technologicalAnalog: 'GENERATIVE MEDIA',
+    sharedPrinciple: 'DYNAMIC EQUILIBRIUM',
+    telemetry: {
+      observed: 'OCEANIC CURRENTS',
+      analog: 'DATA STREAM OPTIMIZATION',
+      coexistence: 'FLUID ARCHITECTURE'
+    },
     format: 'Creative Suite &bull; Visual Showcase',
     teamSize: '1 &ndash; 3 Designers',
     duration: '8 Hours Intensive',
@@ -73,11 +112,21 @@ export const events = [
     id: 'hallucination-hunt',
     name: 'Hallucination Hunt',
     tagline: 'A collaborative technical challenge track for developers of all levels.',
-    tags: ['Adversarial Testing', 'Model Debugging', 'Alignment'],
-    headlineColor: '#FFE57F',  // Electrum / Pure Canary Gold
-    leftAccent: '#00E676',     // Aurora Borealis Quantum Rift
-    rightAccent: '#FF2A85',    // Cyber Rose Signal Glitch Oscilloscope
-    accent: '#00E676',
+    tags: ['MIMICRY', 'PATTERN RECOGNITION'],
+    headlineColor: 'var(--headline-hallucination)',
+    biomeColor: 'var(--accent-hallucination-left)',
+    techColor: 'var(--accent-hallucination-right)',
+    leftAccent: 'var(--accent-hallucination-left)',
+    rightAccent: 'var(--accent-hallucination-right)',
+    accent: 'var(--accent-hallucination-left)',
+    biologicalModel: 'MIMICRY & CAMOUFLAGE',
+    technologicalAnalog: 'COMPUTER VISION',
+    sharedPrinciple: 'PATTERN PERCEPTION',
+    telemetry: {
+      observed: 'PREDATOR EVASION',
+      analog: 'ADVERSARIAL DETECTION',
+      coexistence: 'DECEPTIVE PATTERNS'
+    },
     format: 'Capture The Bug &bull; Collaborative Track',
     teamSize: '1 &ndash; 4 Engineers',
     duration: '4 Hours Diagnostics',
@@ -88,11 +137,21 @@ export const events = [
     id: 'case-a-thon',
     name: 'AI Case-a-thon',
     tagline: 'Real-world business case challenges solved with AI-powered strategy.',
-    tags: ['Market Intelligence', 'Strategic AI', 'Executive Pitch'],
-    headlineColor: '#E5B8FF',  // Ethereal Neon Lilac Ice
-    leftAccent: '#2979FF',     // Deep Royal Sapphire Binary Star System
-    rightAccent: '#FFB300',    // Molten Topaz Gold Macro Strategy HUD
-    accent: '#2979FF',
+    tags: ['NEURAL SYSTEMS', 'PATTERN PROCESSING'],
+    headlineColor: 'var(--headline-caseathon)',
+    biomeColor: 'var(--accent-caseathon-left)',
+    techColor: 'var(--accent-caseathon-right)',
+    leftAccent: 'var(--accent-caseathon-left)',
+    rightAccent: 'var(--accent-caseathon-right)',
+    accent: 'var(--accent-caseathon-left)',
+    biologicalModel: 'NEURAL BIOLOGY',
+    technologicalAnalog: 'ARTIFICIAL NEURAL NETWORKS',
+    sharedPrinciple: 'INFORMATION PROCESSING',
+    telemetry: {
+      observed: 'SYNAPTIC FIRING',
+      analog: 'MACHINE LEARNING MODELS',
+      coexistence: 'PREDICTIVE REASONING'
+    },
     format: 'Consulting Arena &bull; Case Presentation',
     teamSize: '2 &ndash; 4 Strategists',
     duration: '5 Hours Analysis',

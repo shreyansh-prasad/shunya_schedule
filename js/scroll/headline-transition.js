@@ -32,26 +32,29 @@ function preparePushSplit(headline) {
     return { leftCopy: existingLeft, rightCopy: existingRight };
   }
 
-  const rawHTML = headline.innerHTML.trim();
+  const rawText = headline.innerHTML.trim();
+  const rawHTML = `${rawText} &nbsp;&nbsp;&mdash;&nbsp;&nbsp; ${rawText} &nbsp;&nbsp;&mdash;&nbsp;&nbsp; ${rawText}`;
+
+  headline.classList.add('marquee-run');
 
   headline.style.position      = 'relative';
   headline.style.display       = 'inline-block';
   headline.style.width         = 'max-content';
-  headline.style.maxWidth      = '100vw';
+  headline.style.maxWidth      = 'none'; // Allow it to expand fully for marquee
   headline.style.overflow      = 'visible';
   headline.style.whiteSpace    = 'nowrap';
   headline.style.wordBreak     = 'normal';
   headline.style.textAlign     = 'center';
-  headline.style.fontFamily    = "'Chakra Petch', 'Space Grotesk', sans-serif";
-  headline.style.fontSize      = 'clamp(3.5rem, 8.5vw, 8.2rem)';
-  headline.style.fontWeight    = '700';
-  headline.style.letterSpacing = '0.04em';
-  headline.style.lineHeight    = '0.92';
+  headline.style.fontFamily    = "var(--font-heading)";
+  headline.style.fontSize      = 'clamp(4rem, 14vw, 18rem)';
+  headline.style.fontWeight    = '900';
+  headline.style.letterSpacing = '-0.04em';
+  headline.style.lineHeight    = '0.85';
   headline.style.textTransform = 'uppercase';
 
-  const base  = 'display:block;position:absolute;top:0;left:0;width:100%;height:100%;white-space:nowrap;will-change:transform,opacity;pointer-events:none;';
-  const lcClip = 'clip-path:inset(0 50% 0 0);-webkit-clip-path:inset(0 50% 0 0);';
-  const rcClip = 'clip-path:inset(0 0 0 50%);-webkit-clip-path:inset(0 0 0 50%);';
+  const base  = 'display:block;position:absolute;top:0;left:0;width:100%;height:100%;white-space:nowrap;pointer-events:none;';
+  const lcClip = 'clip-path:inset(0 0 50% 0);-webkit-clip-path:inset(0 0 50% 0);';
+  const rcClip = 'clip-path:inset(50% 0 0 0);-webkit-clip-path:inset(50% 0 0 0);';
 
   headline.innerHTML =
     '<span class="shear-ghost" style="display:block;visibility:hidden;opacity:0;pointer-events:none;white-space:nowrap;user-select:none;">' + rawHTML + '</span>' +
@@ -103,24 +106,30 @@ function fireChromaFlash(color) {
 export function buildTimelineTransitions(tl, cards, step = 2.0) {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const outDuration = 0.46;
-  const inDuration  = 0.72;
-  const easeOut     = 'expo.in';
-  const easeIn      = 'expo.out';
+  // Fast snap transition with a long sticky dwell time
+  const transitionDuration = step * 0.8; 
+  const stickyDuration     = step * 0.2;
+  
+  const outDuration = transitionDuration;
+  const inDuration  = transitionDuration;
+  const easeOut     = 'none'; // Linear, no acceleration/deceleration
+  const easeIn      = 'none'; // Linear, no acceleration/deceleration
 
   const items = cards.map(card => {
     const headline  = card.querySelector('.event-headline');
     const metaBar   = card.querySelector('.event-card__meta-bar');
     const actions   = card.querySelector('.event-card__actions');
-    const leftHalf  = card.querySelector('.event-card__half--left');
-    const rightHalf = card.querySelector('.event-card__half--right');
+    const leftHalf  = card.querySelector('.event-card__hemisphere--left');
+    const rightHalf = card.querySelector('.event-card__hemisphere--right');
+    const centerSeam = card.querySelector('.event-card__center-seam');
+    const descriptor = card.querySelector('.event-card__system-descriptor');
     const { leftCopy, rightCopy } = preparePushSplit(headline);
     const accentColor = headline ? headline.style.color : null;
-    return { card, headline, metaBar, actions, leftHalf, rightHalf, leftCopy, rightCopy, accentColor };
+    return { card, headline, metaBar, actions, centerSeam, descriptor, leftHalf, rightHalf, leftCopy, rightCopy, accentColor };
   });
 
   // --- Set initial states ---------------------------------------------------
-  items.forEach(({ card, leftCopy, rightCopy, leftHalf, rightHalf, metaBar, actions }, i) => {
+  items.forEach(({ card, leftCopy, rightCopy, leftHalf, rightHalf, metaBar, actions, centerSeam, descriptor }, i) => {
     const isInitial = (i === 6 || (items.length <= 6 && i === 0));
     if (isInitial) {
       gsap.set(card, { autoAlpha: 1, opacity: 1 });
@@ -128,17 +137,21 @@ export function buildTimelineTransitions(tl, cards, step = 2.0) {
       if (leftCopy  && rightCopy) gsap.set([leftCopy, rightCopy], { x: '0%', opacity: 1 });
       if (metaBar) gsap.set(metaBar, { opacity: 1, y: 0 });
       if (actions) gsap.set(actions, { opacity: 1, y: 0 });
+      if (centerSeam) gsap.set(centerSeam, { opacity: 1 });
+      if (descriptor) gsap.set(descriptor, { opacity: 1, y: 0 });
     } else {
       gsap.set(card, { autoAlpha: 0, opacity: 0 });
       if (!prefersReducedMotion) {
-        if (leftHalf  && rightHalf) { gsap.set(leftHalf, { x: '4%', opacity: 0 }); gsap.set(rightHalf, { x: '-4%', opacity: 0 }); }
-        if (leftCopy  && rightCopy) { gsap.set(leftCopy, { x: '-5%', opacity: 0 }); gsap.set(rightCopy, { x: '5%', opacity: 0 }); }
+        if (leftHalf  && rightHalf) { gsap.set(leftHalf, { y: '100%', x: '0%', opacity: 1 }); gsap.set(rightHalf, { y: '-100%', x: '0%', opacity: 1 }); }
+        if (leftCopy  && rightCopy) { gsap.set(leftCopy, { y: '100vh', x: '0%', opacity: 1 }); gsap.set(rightCopy, { y: '-100vh', x: '0%', opacity: 1 }); }
       } else {
-        if (leftHalf  && rightHalf) gsap.set([leftHalf, rightHalf], { x: '0%', opacity: 0 });
-        if (leftCopy  && rightCopy) gsap.set([leftCopy, rightCopy], { x: '0%', opacity: 0 });
+        if (leftHalf  && rightHalf) gsap.set([leftHalf, rightHalf], { y: '0%', x: '0%', opacity: 0 });
+        if (leftCopy  && rightCopy) gsap.set([leftCopy, rightCopy], { y: '0%', x: '0%', opacity: 0 });
       }
       if (metaBar) gsap.set(metaBar, { opacity: 0, y: 0 });
       if (actions) gsap.set(actions, { opacity: 0, y: 0 });
+      if (centerSeam) gsap.set(centerSeam, { opacity: 0 });
+      if (descriptor) gsap.set(descriptor, { opacity: 0, y: 0 });
     }
   });
 
@@ -149,28 +162,28 @@ export function buildTimelineTransitions(tl, cards, step = 2.0) {
 
     // ENTRANCE
     if (!isFirst) {
-      const inStart = (i - 1) * step + 0.45 + outDuration;
+      const inStart = (i - 1) * step + stickyDuration; // Starts precisely when the previous card begins its exit
       tl.set(item.card, { autoAlpha: 1, opacity: 1 }, inStart);
 
       if (!prefersReducedMotion) {
         if (item.leftHalf && item.rightHalf) {
-          tl.set(item.leftHalf,  { x: '4%',  opacity: 0 }, inStart);
-          tl.set(item.rightHalf, { x: '-4%', opacity: 0 }, inStart);
-          tl.to(item.leftHalf,   { x: '0%', opacity: 1, duration: inDuration,        ease: easeIn }, inStart);
-          tl.to(item.rightHalf,  { x: '0%', opacity: 1, duration: inDuration,        ease: easeIn }, inStart);
+          tl.set(item.leftHalf,  { y: '100%', opacity: 0 }, inStart);
+          tl.set(item.rightHalf, { y: '-100%', opacity: 0 }, inStart);
+          tl.to(item.leftHalf,   { y: '0%', opacity: 1, duration: inDuration, ease: easeIn }, inStart);
+          tl.to(item.rightHalf,  { y: '0%', opacity: 1, duration: inDuration, ease: easeIn }, inStart);
         }
         if (item.leftCopy && item.rightCopy) {
-          tl.set(item.leftCopy,  { x: '-5%', opacity: 0 }, inStart);
-          tl.set(item.rightCopy, { x: '5%',  opacity: 0 }, inStart);
-          tl.to(item.leftCopy,   { x: '0%', opacity: 1, duration: inDuration * 0.88, ease: easeIn }, inStart + 0.08);
-          tl.to(item.rightCopy,  { x: '0%', opacity: 1, duration: inDuration * 0.88, ease: easeIn }, inStart + 0.08);
+          tl.set(item.leftCopy,  { y: '100vh', opacity: 0 }, inStart);
+          tl.set(item.rightCopy, { y: '-100vh', opacity: 0 }, inStart);
+          tl.to(item.leftCopy,   { y: '0%', opacity: 1, duration: inDuration, ease: easeIn }, inStart);
+          tl.to(item.rightCopy,  { y: '0%', opacity: 1, duration: inDuration, ease: easeIn }, inStart);
         }
       } else {
         const targets = [item.leftHalf, item.rightHalf, item.leftCopy, item.rightCopy].filter(Boolean);
         if (targets.length > 0) tl.to(targets, { opacity: 1, duration: inDuration, ease: 'power2.inOut' }, inStart);
       }
 
-      const metaTargets = [item.metaBar, item.actions].filter(Boolean);
+      const metaTargets = [item.centerSeam, item.metaBar, item.descriptor, item.actions].filter(Boolean);
       if (metaTargets.length > 0) {
         tl.fromTo(metaTargets, { opacity: 0, y: 14 },
           { opacity: 1, y: 0, duration: inDuration * 0.78, ease: easeIn, stagger: 0.09 },
@@ -180,27 +193,28 @@ export function buildTimelineTransitions(tl, cards, step = 2.0) {
 
     // EXIT
     if (!isLast) {
-      const outStart = i * step + 0.45;
+      const outStart = i * step + stickyDuration; // Wait through the sticky phase before tearing apart
       const outEnd   = outStart + outDuration;
 
       if (!prefersReducedMotion) {
-        const metaTargets = [item.metaBar, item.actions].filter(Boolean);
+        const metaTargets = [item.centerSeam, item.metaBar, item.descriptor, item.actions].filter(Boolean);
         if (metaTargets.length > 0) {
           tl.to(metaTargets, { opacity: 0, y: -10, duration: outDuration * 0.52, ease: easeOut, stagger: 0.04 }, outStart);
         }
         if (item.leftHalf && item.rightHalf) {
-          tl.to(item.leftHalf,  { x: '-108%', opacity: 0, duration: outDuration,        ease: easeOut }, outStart);
-          tl.to(item.rightHalf, { x: '108%',  opacity: 0, duration: outDuration,        ease: easeOut }, outStart);
+          // Left moves UP, Right moves DOWN
+          tl.to(item.leftHalf,  { y: '-100%', opacity: 0, duration: outDuration, ease: easeOut }, outStart);
+          tl.to(item.rightHalf, { y: '100%',  opacity: 0, duration: outDuration, ease: easeOut }, outStart);
         }
-        // Counter-motion: left exits RIGHT, right exits LEFT — multi-layer depth parallax
         if (item.leftCopy && item.rightCopy) {
-          tl.to(item.leftCopy,  { x: '95%',  opacity: 0, duration: outDuration * 0.86, ease: easeOut }, outStart + 0.03);
-          tl.to(item.rightCopy, { x: '-95%', opacity: 0, duration: outDuration * 0.86, ease: easeOut }, outStart + 0.03);
+          // Left copy moves UP, Right copy moves DOWN
+          tl.to(item.leftCopy,  { y: '-100vh', opacity: 0, duration: outDuration, ease: easeOut }, outStart);
+          tl.to(item.rightCopy, { y: '100vh',  opacity: 0, duration: outDuration, ease: easeOut }, outStart);
         }
         // Chromatic flash at mid-exit
         tl.call(() => fireChromaFlash(item.accentColor), [], outStart + outDuration * 0.5);
       } else {
-        const metaTargets = [item.metaBar, item.actions].filter(Boolean);
+        const metaTargets = [item.centerSeam, item.metaBar, item.descriptor, item.actions].filter(Boolean);
         if (metaTargets.length > 0) tl.to(metaTargets, { opacity: 0, duration: outDuration * 0.6, ease: 'power2.inOut' }, outStart);
         const fadeTargets = [item.leftHalf, item.rightHalf, item.leftCopy, item.rightCopy].filter(Boolean);
         if (fadeTargets.length > 0) tl.to(fadeTargets, { opacity: 0, duration: outDuration, ease: 'power2.inOut' }, outStart);

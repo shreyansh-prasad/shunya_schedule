@@ -13,7 +13,7 @@
  */
 
 import { events } from '../data/events.js';
-import { buildTimelineTransitions } from './headline-transition.js';
+import { buildTimelineTransitions } from './headline-transition.js?v=3';
 import { getEventSpaceVisuals } from './space-visuals.js';
 
 const SCROLL_PER_EVENT = 1200; // px of scroll spacer per event — smooth, deliberate, premium
@@ -64,32 +64,25 @@ export function init() {
 
     const cardHTML = `
       <div class="event-card ${isFirst ? 'is-active' : ''}" data-index="${index}" data-local="${event._localIndex}">
-        ${leftHTML}
-        ${rightHTML}
-        
-        <!-- Architectural Center Split Seam -->
-        <div class="event-card__center-seam">
-          <div class="event-card__seam-line"></div>
-          <div class="event-card__seam-reticle" style="border-color: ${headlineColor}66;">
-            <div class="event-card__seam-core" style="background: ${headlineColor};"></div>
-          </div>
-          <div class="event-card__seam-line"></div>
-        </div>
-
+        <div class="event-card__hemisphere event-card__hemisphere--left"></div>
+        <div class="event-card__hemisphere event-card__hemisphere--right"></div>
         <div class="event-card__center">
           <div class="event-card__meta-bar">
-            <span class="event-card__counter" style="color: ${headlineColor};">[ ${paddedIndex} // 06 ]</span>
+            <div class="event-card__counter" style="color: ${headlineColor}; font-family: var(--font-ui); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.25em; opacity: 0.7; margin-bottom: 16px; text-transform: uppercase; border: 1px solid currentColor; padding: 6px 14px; border-radius: 100px; display: inline-block; background: rgba(0,0,0,0.2); backdrop-filter: blur(4px);">
+              EVENT ${paddedIndex} // ${String(N).padStart(2, '0')}
+            </div>
+            <div class="event-card__full-title" style="color: ${headlineColor};">// ${event.name}</div>
             <div class="event-card__tags">
-              ${tags.map(tag => `<span class="event-card__tag" style="color: ${headlineColor}; border-color: ${headlineColor}55;">${tag}</span>`).join('')}
+              ${tags.map(tag => `<span class="event-card__tag" style="color: ${headlineColor};">${tag}</span>`).join('<span class="tag-separator" style="color: ${headlineColor};">&amp;</span>')}
             </div>
           </div>
-          <h2 class="event-headline ${isFirst ? 'is-active' : ''}" style="color: ${headlineColor}; text-shadow: 0 0 50px ${headlineColor}44, 0 10px 40px rgba(0,0,0,0.9);">
+          <h2 class="event-headline ${isFirst ? 'is-active' : ''}" style="color: ${headlineColor};">
             ${event.name}
           </h2>
           <div class="event-card__actions">
-            <button class="event-card__details-btn" style="--btn-accent: ${headlineColor};" data-id="${event.id}" type="button">
-              <span>EXPLORE CHALLENGE</span>
-              <span class="event-card__btn-arrow">&rarr;</span>
+            <button class="event-card__details-btn" data-id="${event.id}" type="button" style="color: ${headlineColor};">
+              <span>DETAILS</span>
+              <span class="event-card__btn-arrow" style="display: block; margin-top: 4px;">&#8600;</span>
             </button>
           </div>
         </div>
@@ -112,7 +105,7 @@ export function init() {
       pin: true,
       start: 'top top',
       end: `+=${totalScroll}`,
-      scrub: 0.6, // Tighter premium scrub — crisp, responsive, cinematic
+      scrub: true, // Native 1:1 scrub, smoothed by Lenis for buttery responsiveness
       onUpdate: (self) => {
         const rawIndex = self.progress * (totalCards - 1);
         const activeIndex = Math.min(totalCards - 1, Math.max(0, Math.round(rawIndex)));
@@ -150,7 +143,13 @@ export function init() {
 
     // Instantly sync timeline progress to avoid scrub rewind sweeps
     tl.progress(targetProgress);
-    window.scrollTo({ top: targetY, behavior: 'instant' });
+    
+    if (window.lenis) {
+      window.lenis.scrollTo(targetY, { immediate: true });
+    } else {
+      window.scrollTo({ top: targetY, behavior: 'instant' });
+    }
+    
     st.scroll(targetY);
     st.update(false, true);
 

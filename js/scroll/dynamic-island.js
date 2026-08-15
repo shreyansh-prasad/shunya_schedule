@@ -1,14 +1,20 @@
 /**
- * Dynamic Island Module — Days-Only Edition
- * A single liquid glass-metal pill, always visible at bottom center.
- * Shows DAY 01, DAY 02, DAY 03 — active day highlighted with liquid glider.
- * Click a day to navigate. Scroll auto-syncs the active day.
+ * Liquid Glass Dynamic Island — Premium Motion Design
+ *
+ * STATES: COMPACT → OPENING → OPEN → CLOSING → COMPACT
+ *
+ * Rules:
+ * - Island owns all timing; scroll only fires an event, never drives the animation
+ * - Compact = only active day visible, pill is tight around it
+ * - Open = all days visible, user can pick freely
+ * - Scroll day-change → open → glider slides → auto-close after fixed delay
+ * - Hover → open → user can pick → close on leave
  */
 
 const DAYS_DATA = [
-  { day: 1, title: 'DAY 01', accent: '#FF1E4B', eventIndices: [0, 1] },
-  { day: 2, title: 'DAY 02', accent: '#FF6B00', eventIndices: [2, 3] },
-  { day: 3, title: 'DAY 03', accent: '#00E676', eventIndices: [4, 5] }
+  { day: 1, title: 'DAY 01', accent: '#00FFAA', eventIndices: [0, 1] },
+  { day: 2, title: 'DAY 02', accent: '#00F0FF', eventIndices: [2, 3] },
+  { day: 3, title: 'DAY 03', accent: '#02C39A', eventIndices: [4, 5] },
 ];
 
 export function init() {
@@ -19,128 +25,308 @@ export function init() {
     document.body.appendChild(root);
   }
 
-  // Build markup — always-visible 3-day pill
   root.innerHTML = `
     <nav class="dynamic-island" id="dynamic-island" aria-label="Day Navigation">
-      <div class="dynamic-island__gloss" aria-hidden="true"></div>
-      <div class="dynamic-island__shimmer" aria-hidden="true"></div>
-      <div class="dynamic-island__glider" id="island-glider" aria-hidden="true"></div>
-
-      <div class="dynamic-island__days" id="island-days">
-        ${DAYS_DATA.map((d, i) => `
-          <button
-            class="dynamic-island__day-btn${i === 0 ? ' is-active' : ''}"
-            data-day="${d.day}"
-            data-nav-event="${d.eventIndices[0]}"
-            style="--day-accent: ${d.accent};"
-            type="button"
-            aria-label="Navigate to ${d.title}"
-          >
-            <span class="dynamic-island__day-dot"></span>
-            <span class="dynamic-island__day-label">${d.title}</span>
-          </button>
-        `).join('')}
+      <div class="dynamic-island__shadow" id="island-shadow"></div>
+      <div class="dynamic-island__material"></div>
+      <div class="dynamic-island__highlight" id="island-highlight"></div>
+      <div class="dynamic-island__rim"></div>
+      <div class="dynamic-island__content-layer">
+        <div class="dynamic-island__btn-row" id="island-btn-row">
+          <div class="dynamic-island__glider" id="island-glider"></div>
+          ${DAYS_DATA.map((d, i) => `
+            <button
+              class="dynamic-island__day-btn${i === 0 ? ' is-active' : ''}"
+              data-day="${d.day}"
+              data-nav-event="${d.eventIndices[0]}"
+              type="button"
+              aria-label="${d.title}"
+            ><span class="dynamic-island__day-label">${d.title}</span></button>
+          `).join('')}
+        </div>
       </div>
     </nav>
   `;
 
   const island    = document.getElementById('dynamic-island');
+  const shadow    = document.getElementById('island-shadow');
+  const highlight = document.getElementById('island-highlight');
+  const btnRow    = document.getElementById('island-btn-row');
   const glider    = document.getElementById('island-glider');
   const dayBtns   = Array.from(island.querySelectorAll('.dynamic-island__day-btn'));
 
-  let currentDay  = 1;
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // ── Position the liquid glider under the active day button ────────────────
-  // Use GSAP quickTo for fluid, spring-like glider movement
-  const gliderTo = {
-    left: gsap.quickTo(glider, 'x', { duration: 0.5, ease: 'expo.out' }),
-    width: gsap.quickTo(glider, 'width', { duration: 0.5, ease: 'expo.out' })
+  // ── STATE ──────────────────────────────────────────────────────────────────
+  let state         = 'COMPACT';
+  let currentDay    = 1;
+  let hoverActive   = false;
+  let autoCloseTimer = null;
+
+  // Cached geometry (measured after DOM settles)
+  let openW    = 0;
+  let pillH    = 0;
+  let compactW = 0;
+  let btnWidths = [];
+
+  // ── TIMING (fast but premium) ──────────────────────────────────────────────
+  const T = {
+    open:           0.55,
+    close:          0.5,
+    easeOpen:       'expo.out',
+    easeClose:      'expo.inOut',
+    glide:          0.55,
+    glideEase:      'elastic.out(1, 0.7)',
+    labelIn:        0.25,
+    labelOut:       0.15,
+    autoCloseDelay: 1200,  // ms before auto-close after scroll event
+    hoverCloseGrace: 200,  // ms grace before closing on mouse-leave
   };
 
+  // ── GEOMETRY HELPERS ────────────────────────────────────────────────────────
+  function measureGeometry() {
+    // All buttons must be fully visible for measurement
+    dayBtns.forEach(b => {
+      b.style.opacity = '1';
+      b.style.overflow = 'visible';
+      b.style.maxWidth = 'none';
+      b.style.paddingLeft = '';
+      b.style.paddingRight = '';
+    });
+    island.style.width  = 'auto';
+    island.style.height = 'auto';
+
+    const iRect = island.getBoundingClientRect();
+    openW  = iRect.width;
+    pillH  = iRect.height;
+
+    dayBtns.forEach((b, i) => {
+      btnWidths[i] = b.getBoundingClientRect().width;
+    });
+
+    const activeIndex = currentDay - 1;
+    const aBtnW = btnWidths[activeIndex] || 140;
+    compactW = aBtnW + 20;
+  }
+
+  /**
+   * Position the glider to sit exactly over `dayNum`'s button.
+   * We use btnRow as the offset parent since glider is inside it (z-index child).
+   */
   function positionGlider(dayNum, immediate = false) {
     const btn = island.querySelector(`.dynamic-island__day-btn[data-day="${dayNum}"]`);
     if (!btn || !glider) return;
 
-    const islandRect = island.getBoundingClientRect();
-    const btnRect    = btn.getBoundingClientRect();
+    const rowRect = btnRow.getBoundingClientRect();
+    const btnRect = btn.getBoundingClientRect();
+    if (rowRect.width === 0) return;
 
-    if (islandRect.width === 0) return;
+    const x = btnRect.left - rowRect.left;
+    const w = btnRect.width;
 
-    const left  = btnRect.left  - islandRect.left;
-    const width = btnRect.width;
-
-    if (immediate) {
-      gsap.set(glider, { x: left, width });
+    if (immediate || prefersReducedMotion) {
+      gsap.set(glider, { x, width: w });
     } else {
-      gliderTo.left(left);
-      gliderTo.width(width);
+      gsap.to(glider, { x, width: w, duration: T.glide, ease: T.glideEase });
     }
   }
 
-  // ── Update the active day visuals ─────────────────────────────────────────
-  function setActiveDay(dayNum, playShimmer = false) {
-    if (dayNum === currentDay && !playShimmer) return;
+  // ── ACCENT COLOR ────────────────────────────────────────────────────────────
+  function setAccent(dayNum) {
+    const d = DAYS_DATA[dayNum - 1];
+    if (!d) return;
+    island.style.setProperty('--day-accent', d.accent);
+  }
+
+  // ── OPEN ───────────────────────────────────────────────────────────────────
+  function open(reason) {
+    if (state === 'OPEN' || state === 'OPENING') return;
+    state = 'OPENING';
+    clearTimeout(autoCloseTimer);
+
+    // Reveal all buttons
+    dayBtns.forEach(btn => {
+      gsap.to(btn, {
+        opacity: 1,
+        maxWidth: 300,
+        paddingLeft: 24,
+        paddingRight: 24,
+        overflow: 'visible',
+        duration: T.labelIn,
+        ease: 'power2.out',
+        delay: 0.05,
+      });
+    });
+
+    // Expand island pill
+    gsap.to(island, {
+      width:    openW,
+      height:   pillH,
+      duration: T.open,
+      ease:     T.easeOpen,
+      onComplete() {
+        state = 'OPEN';
+        positionGlider(currentDay, true);
+      }
+    });
+
+    gsap.to(shadow, {
+      opacity:  0.8,
+      duration: T.open,
+      ease:     'power3.out'
+    });
+
+    gsap.to(glider, {
+      opacity: 1,
+      duration: T.open,
+      ease: 'power2.out'
+    });
+
+    if (reason === 'scroll') {
+      autoCloseTimer = setTimeout(() => {
+        if (!hoverActive) close();
+      }, T.autoCloseDelay);
+    }
+  }
+
+  // ── CLOSE ──────────────────────────────────────────────────────────────────
+  function close() {
+    if (state === 'COMPACT' || state === 'CLOSING') return;
+    state = 'CLOSING';
+    clearTimeout(autoCloseTimer);
+
+    // Get pre-calculated compact width for the active button
+    const activeIndex = currentDay - 1;
+    const aBtnW = btnWidths[activeIndex] || 140;
+    compactW = aBtnW + 20;
+
+    // Fade and collapse non-active buttons
+    dayBtns.forEach(btn => {
+      const active = parseInt(btn.dataset.day, 10) === currentDay;
+      if (!active) {
+        gsap.to(btn, {
+          opacity:  0,
+          maxWidth: 0,
+          paddingLeft: 0,
+          paddingRight: 0,
+          overflow: 'hidden',
+          duration: T.labelOut,
+          ease:     'power2.in',
+        });
+      }
+    });
+
+    // Shrink island
+    gsap.to(island, {
+      width:    compactW,
+      height:   pillH,
+      delay:    0.05,
+      duration: T.close,
+      ease:     T.easeClose,
+      onComplete() {
+        state = 'COMPACT';
+        positionGlider(currentDay, true);
+      }
+    });
+
+    gsap.to(shadow, {
+      opacity:  0.55,
+      duration: T.close,
+      ease:     'power3.out'
+    });
+
+    gsap.to(glider, {
+      opacity: 0,
+      duration: T.close * 0.8,
+      ease: 'power2.in'
+    });
+  }
+
+  // ── SET ACTIVE DAY ─────────────────────────────────────────────────────────
+  function setActiveDay(dayNum) {
+    const changed = dayNum !== currentDay;
     currentDay = dayNum;
 
-    const dayData = DAYS_DATA[dayNum - 1];
-    const color   = dayData ? dayData.accent : '#00F0FF';
-
-    // Update island ambient glow colour to active day's accent
-    island.style.setProperty('--island-active-color', color);
-    island.style.setProperty('--island-glow', `${color}55`);
-
-    // Flip is-active on buttons
     dayBtns.forEach(btn => {
-      const isActive = parseInt(btn.dataset.day, 10) === dayNum;
-      btn.classList.toggle('is-active', isActive);
+      btn.classList.toggle('is-active', parseInt(btn.dataset.day, 10) === dayNum);
     });
+    setAccent(dayNum);
 
-    // Slide the glider
-    positionGlider(dayNum);
+    if (!changed) return;
 
-    // Shimmer effect on day change
-    if (playShimmer) {
-      island.classList.remove('is-liquid-morph');
-      void island.offsetWidth; // reflow to restart animation
-      island.classList.add('is-liquid-morph');
+    if (state === 'COMPACT') {
+      open('scroll');
+      // Glider slides once island is partially open
+      setTimeout(() => positionGlider(dayNum), 180);
+    } else if (state === 'OPEN') {
+      positionGlider(dayNum);
+      clearTimeout(autoCloseTimer);
+      autoCloseTimer = setTimeout(() => {
+        if (!hoverActive) close();
+      }, T.autoCloseDelay);
     }
   }
 
-  // ── Listen for scroll-driven event changes ────────────────────────────────
-  window.addEventListener('shunya:event-change', (e) => {
-    if (!e.detail || typeof e.detail.index !== 'number') return;
-    const localIndex = e.detail.index;
-    const newDay     = Math.floor(localIndex / 2) + 1;
-    const dayChanged = newDay !== currentDay;
-    setActiveDay(newDay, dayChanged);
+  // ── HOVER ──────────────────────────────────────────────────────────────────
+  island.addEventListener('mouseenter', () => {
+    hoverActive = true;
+    clearTimeout(autoCloseTimer);
+    if (state === 'COMPACT') open('hover');
   });
 
-  // ── Click navigation ──────────────────────────────────────────────────────
+  island.addEventListener('mouseleave', () => {
+    hoverActive = false;
+    if (state === 'OPEN' || state === 'OPENING') {
+      autoCloseTimer = setTimeout(() => close(), T.hoverCloseGrace);
+    }
+  });
+
+  // ── DAY BUTTON CLICKS ───────────────────────────────────────────────────────
   dayBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const targetEventIdx = parseInt(btn.dataset.navEvent, 10);
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const clickedDay = parseInt(btn.dataset.day, 10);
+
+      dayBtns.forEach(b => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      currentDay = clickedDay;
+      setAccent(clickedDay);
+      positionGlider(clickedDay);
+
       window.dispatchEvent(new CustomEvent('shunya:navigate-to-event', {
-        detail: { index: targetEventIdx }
+        detail: { index: parseInt(btn.dataset.navEvent, 10) }
       }));
+
+      clearTimeout(autoCloseTimer);
+      autoCloseTimer = setTimeout(() => {
+        if (!hoverActive) close();
+      }, 500);
     });
   });
 
-  // ── Hover micro-lift with GSAP ─────────────────────────────────────────────
-  island.addEventListener('mouseenter', () => {
-    island.classList.add('is-hovered');
-    gsap.to(island, { y: -4, duration: 0.35, ease: 'expo.out' });
-  });
-  island.addEventListener('mouseleave', () => {
-    island.classList.remove('is-hovered');
-    gsap.to(island, { y: 0, duration: 0.5, ease: 'expo.out' });
+  // ── SCROLL EVENT ────────────────────────────────────────────────────────────
+  window.addEventListener('shunya:event-change', e => {
+    if (!e.detail || typeof e.detail.index !== 'number') return;
+    const newDay = Math.floor(e.detail.index / 2) + 1;
+    setActiveDay(newDay);
   });
 
-  // ── Initial setup ─────────────────────────────────────────────────────────
-  setActiveDay(1, false);
-  // Defer glider positioning until layout is painted
-  requestAnimationFrame(() => {
-    setTimeout(() => positionGlider(1, true), 100);
-  });
+  // ── INIT ───────────────────────────────────────────────────────────────────
+  setTimeout(() => {
+    measureGeometry();
 
-  console.log('[DynamicIsland] Days-only liquid glass island ready.');
+    // Start compact: hide non-active day buttons
+    dayBtns.forEach((btn, i) => {
+      if (i !== 0) {
+        gsap.set(btn, { opacity: 0, maxWidth: 0, paddingLeft: 0, paddingRight: 0, overflow: 'hidden' });
+      }
+    });
+
+    gsap.set(island, { width: compactW, height: pillH });
+    gsap.set(glider, { opacity: 0 });
+    setAccent(currentDay);
+    positionGlider(currentDay, true);
+
+    console.log('[DynamicIsland] compactW:', compactW, 'openW:', openW, 'pillH:', pillH);
+  }, 150);
 }
