@@ -46,7 +46,7 @@ function preparePushSplit(headline) {
   headline.style.wordBreak     = 'normal';
   headline.style.textAlign     = 'center';
   headline.style.fontFamily    = "var(--font-heading)";
-  headline.style.fontSize      = 'clamp(1.7rem, 9vw, 18rem)';
+  headline.style.fontSize      = 'clamp(4rem, 14vw, 18rem)';
   headline.style.fontWeight    = '900';
   headline.style.letterSpacing = '-0.04em';
   headline.style.lineHeight    = '0.85';
