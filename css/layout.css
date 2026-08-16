@@ -1873,3 +1873,20 @@
     padding: 6px 8px;
   }
 }
+
+
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-33.3333%); }
+}
+
+.marquee-inner {
+  animation: marquee-scroll 15s linear infinite;
+}
+
+/* Pause on reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .marquee-inner {
+    animation: none;
+  }
+}

@@ -33,7 +33,7 @@ function preparePushSplit(headline) {
   }
 
   const rawText = headline.innerHTML.trim();
-  const rawHTML = `${rawText} &nbsp;&nbsp;&mdash;&nbsp;&nbsp; ${rawText} &nbsp;&nbsp;&mdash;&nbsp;&nbsp; ${rawText}`;
+  const rawHTML = `${rawText} &nbsp;&nbsp;&mdash;&nbsp;&nbsp; ${rawText} &nbsp;&nbsp;&mdash;&nbsp;&nbsp; ${rawText} &nbsp;&nbsp;&mdash;&nbsp;&nbsp; `;
 
   headline.classList.add('marquee-run');
 
@@ -57,9 +57,9 @@ function preparePushSplit(headline) {
   const rcClip = 'clip-path:inset(50% 0 0 0);-webkit-clip-path:inset(50% 0 0 0);';
 
   headline.innerHTML =
-    '<span class="shear-ghost" style="display:block;visibility:hidden;opacity:0;pointer-events:none;white-space:nowrap;user-select:none;">' + rawHTML + '</span>' +
-    '<span class="shear-copy shear-copy--left"  style="' + base + lcClip + '">' + rawHTML + '</span>' +
-    '<span class="shear-copy shear-copy--right" style="' + base + rcClip + '">' + rawHTML + '</span>';
+    '<span class="shear-ghost" style="display:block;visibility:hidden;opacity:0;pointer-events:none;white-space:nowrap;user-select:none;"><span class="marquee-inner" style="display:inline-block;">' + rawHTML + '</span></span>' +
+    '<span class="shear-copy shear-copy--left"  style="' + base + lcClip + '"><span class="marquee-inner" style="display:inline-block;">' + rawHTML + '</span></span>' +
+    '<span class="shear-copy shear-copy--right" style="' + base + rcClip + '"><span class="marquee-inner" style="display:inline-block;">' + rawHTML + '</span></span>';
 
   return {
     leftCopy:  headline.querySelector('.shear-copy--left'),
