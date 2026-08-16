@@ -1442,7 +1442,6 @@
   box-shadow: 0 0 30px var(--btn-accent, rgba(255, 255, 255, 0.6));
 }
 
-/* ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Responsive Refinements ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ */
 @media (max-width: 900px) {
   .header {
     padding: 0 20px;
@@ -1757,7 +1756,7 @@
   position: relative;          /* glider is positioned relative to this */
   display: flex;
   align-items: center;
-  padding: 10px 10px;          /* vertical breathing; horizontal tightened so compact is tight */
+  padding: 14px 14px;          /* Restored large padding for desktop */
 }
 
 /* ── Day buttons ─────────────────────────────────────────────── */
@@ -1766,12 +1765,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 24px;
+  padding: 14px 32px;          /* Restored large padding for desktop */
   background: transparent;
   border: none;
   cursor: pointer;
   font-family: var(--font-ui);
-  font-size: 1.4rem;
+  font-size: 1.8rem;           /* Restored large font-size for desktop */
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -1781,6 +1780,14 @@
   /* maxWidth + overflow:hidden used by JS to show/hide in compact state */
   max-width: 300px;
   overflow: hidden;
+  transition:
+    color 0.3s ease,
+    text-shadow 0.3s ease,
+    transform 0.2s var(--ease-premium);
+}
+
+.dynamic-island__day-btn:hover {
+  color: var(--star-white);
 }
 
 .dynamic-island__day-btn.is-active {
@@ -1860,17 +1867,17 @@
     bottom: 24px;
   }
   .dynamic-island__day-btn {
-    padding: 8px 16px;
-    font-size: 0.9rem;
-    letter-spacing: 0.14em;
-    gap: 6px;
+    padding: 6px 12px;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    gap: 4px;
   }
   .dynamic-island__day-dot {
     width: 5px;
     height: 5px;
   }
   .dynamic-island__btn-row {
-    padding: 6px 8px;
+    padding: 4px 6px;
   }
 }
 
