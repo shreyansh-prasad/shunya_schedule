@@ -13,7 +13,7 @@
  */
 
 import { events } from '../data/events.js';
-import { buildTimelineTransitions } from './headline-transition.js?v=3';
+import { buildTimelineTransitions } from './headline-transition.js?v=4';
 import { getEventSpaceVisuals } from './space-visuals.js';
 
 const SCROLL_PER_EVENT = 1200; // px of scroll spacer per event — smooth, deliberate, premium
