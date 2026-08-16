@@ -1756,7 +1756,7 @@
   position: relative;          /* glider is positioned relative to this */
   display: flex;
   align-items: center;
-  padding: 14px 14px;          /* Restored large padding for desktop */
+  padding: 8px 10px;          /* Adjusted padding for desktop */
 }
 
 /* ── Day buttons ─────────────────────────────────────────────── */
@@ -1765,12 +1765,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 14px 32px;          /* Restored large padding for desktop */
+  padding: 10px 20px;          /* Adjusted padding for desktop */
   background: transparent;
   border: none;
   cursor: pointer;
   font-family: var(--font-ui);
-  font-size: 1.8rem;           /* Restored large font-size for desktop */
+  font-size: 1.1rem;           /* Adjusted font-size for desktop */
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
